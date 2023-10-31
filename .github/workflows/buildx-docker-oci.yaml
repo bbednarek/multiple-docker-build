@@ -1,0 +1,72 @@
+name: Docker buildx oci
+
+env:
+  PLATFORMS: linux/arm64,linux/amd64
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      DOCKER_IMAGE: bartbednarek/multiple-docker-build
+    concurrency:
+      group: build-${{ github.ref }}
+      cancel-in-progress: true
+    steps:
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ vars.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}      
+
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Set up Docker QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker context for buildx
+        run: |
+          docker context create builders
+
+      - name: Set up Docker buildx
+        uses: docker/setup-buildx-action@v3
+        with:
+          endpoint: builders
+          platforms: ${{ env.PLATFORMS }}
+
+        # We can't use the docker/build-push-action, because of the issue with multi Dockefile build
+#      - name: Docker local builder image
+#        uses: docker/build-push-action@v5
+#        with:
+#          file: Dockerfile.builder
+#          platforms: ${{ env.PLATFORMS }}
+#          push: false
+#          outputs: |
+#            type=oci,dest=builder-image,tar=false
+
+      - name: Docker local builder image        
+        run: >
+          docker buildx build
+          --output type=oci,dest=builder-image,tar=false           
+          --platform=${{ env.PLATFORMS }}
+          .
+          -f Dockerfile.builder 
+
+      - name: Docker Build & Push
+        uses: docker/build-push-action@v5
+        with:          
+          build-contexts: |
+            builder=oci-layout://./docker/builder-image
+          platforms: ${{ env.PLATFORMS }}
+          push: ${{ github.ref == 'refs/heads/main' }}
+          tags: |
+            ${{ env.DOCKER_IMAGE }}:${{ github.run_number }}_${{ github.run_id }}
+            ${{ env.DOCKER_IMAGE }}:latest
