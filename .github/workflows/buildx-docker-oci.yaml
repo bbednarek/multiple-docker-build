@@ -64,7 +64,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:          
           build-contexts: |
-            builder=oci-layout://./docker/builder-image
+            builder=oci-layout://./builder-image
           platforms: ${{ env.PLATFORMS }}
           push: ${{ github.ref == 'refs/heads/main' }}
           tags: |
