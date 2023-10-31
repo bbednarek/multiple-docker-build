@@ -27,7 +27,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}      
 
       - name: Checkout Repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up Docker QEMU
         uses: docker/setup-qemu-action@v3
@@ -39,7 +39,7 @@ jobs:
       - name: Set up Docker buildx
         uses: docker/setup-buildx-action@v3
         with:
-          endpoint: builders
+          # endpoint: builders
           platforms: ${{ env.PLATFORMS }}
 
       - name: Docker local builder image
