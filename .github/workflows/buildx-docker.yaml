@@ -1,17 +1,17 @@
-name: Docker buildx oci
+name: Docker buildx
 
 env:
   PLATFORMS: ${{ vars.PLATFORMS }}
 
-on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
-  workflow_dispatch:
+# on:
+#   push:
+#     branches: [ main ]
+#   pull_request:
+#     branches: [ main ]
+#   workflow_dispatch:
 
 jobs:
-  buildx-docker-oci:
+  buildx-docker:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
@@ -32,9 +32,9 @@ jobs:
       - name: Set up Docker QEMU
         uses: docker/setup-qemu-action@v3
 
-      # - name: Set up Docker context for buildx
-      #   run: |
-      #     docker context create builders
+      - name: Set up Docker context for buildx
+        run: |
+          docker context create builders
 
       - name: Set up Docker buildx
         uses: docker/setup-buildx-action@v3
@@ -48,13 +48,12 @@ jobs:
           file: Dockerfile.builder
           platforms: ${{ env.PLATFORMS }}
           push: false
-          outputs: |
-            type=oci,dest=builder-image,tar=false
+          outputs: builder-image
 
       # - name: Docker local builder image        
       #   run: >
       #     docker buildx build
-      #     --output type=oci,dest=builder-image,tar=false           
+      #     --output builder-image
       #     --platform=${{ env.PLATFORMS }}
       #     .
       #     -f Dockerfile.builder 
@@ -63,7 +62,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:          
           build-contexts: |
-            builder=oci-layout://./builder-image
+            builder=builder-image
           platforms: ${{ env.PLATFORMS }}
           push: ${{ github.ref == 'refs/heads/main' }}
           tags: |

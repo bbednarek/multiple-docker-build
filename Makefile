@@ -1,7 +1,7 @@
 IMAGE_NAME=multiple-docker-build
-PLATFORMS=linux/arm64,linux/amd64
+PLATFORMS=linux/amd64
 
-all: clean buildx-docker
+all: clean buildx-docker-oci
 
 clean:
 	./gradlew clean
