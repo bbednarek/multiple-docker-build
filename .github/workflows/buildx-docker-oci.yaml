@@ -11,7 +11,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  buildx-docker-oci:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
@@ -69,4 +69,4 @@ jobs:
           push: ${{ github.ref == 'refs/heads/main' }}
           tags: |
             ${{ env.DOCKER_IMAGE }}:${{ github.run_number }}_${{ github.run_id }}
-            ${{ env.DOCKER_IMAGE }}:latest
+            ${{ env.DOCKER_IMAGE }}:${{ github.job }}
