@@ -1,7 +1,7 @@
 name: Docker buildx oci
 
 env:
-  PLATFORMS: linux/arm64,linux/amd64
+  PLATFORMS: linux/arm64
 
 on:
   push:
