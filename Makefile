@@ -23,10 +23,5 @@ build-docker:
 	docker build --output builder-image . -f Dockerfile.builder
 	docker build --load --build-context builder=builder-image . -t ${IMAGE_NAME} 
 
-build-docker-oci:
-	./gradlew build
-	docker build --output type=oci,dest=builder-image,tar=false . -f Dockerfile.builder
-	docker build --load --build-context builder=oci-layout://./builder-image . -t ${IMAGE_NAME} 
-
 test: buildx-docker
 	./gradlew clean test
