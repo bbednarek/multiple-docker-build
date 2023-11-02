@@ -13,7 +13,7 @@ on:
 jobs:
   buildx-docker:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 60
     env:
       DOCKER_IMAGE: bartbednarek/multiple-docker-build
     concurrency:
@@ -54,4 +54,4 @@ jobs:
           push: ${{ github.ref == 'refs/heads/main' }}
           tags: |
             ${{ env.DOCKER_IMAGE }}:${{ github.run_number }}_${{ github.run_id }}
-            ${{ env.DOCKER_IMAGE }}:${{ github.job }}
+            ${{ env.DOCKER_IMAGE }}:buildx-docker
