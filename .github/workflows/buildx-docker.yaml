@@ -1,0 +1,57 @@
+name: Docker buildx
+
+env:
+  PLATFORMS: ${{ vars.PLATFORMS }}
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  buildx-docker:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      DOCKER_IMAGE: bartbednarek/multiple-docker-build
+    concurrency:
+      group: buildx-docker-${{ github.ref }}
+      cancel-in-progress: true
+    steps:
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ vars.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}      
+
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker buildx
+        uses: docker/setup-buildx-action@v3
+        with:
+          platforms: ${{ env.PLATFORMS }}
+
+      - name: Docker local builder image
+        uses: docker/build-push-action@v5
+        with:
+          file: Dockerfile.builder
+          platforms: ${{ env.PLATFORMS }}
+          push: false
+          outputs: builder-image
+
+      - name: Docker Build & Push
+        uses: docker/build-push-action@v5
+        with:          
+          build-contexts: |
+            builder=builder-image
+          platforms: ${{ env.PLATFORMS }}
+          push: ${{ github.ref == 'refs/heads/main' }}
+          tags: |
+            ${{ env.DOCKER_IMAGE }}:${{ github.run_number }}_${{ github.run_id }}
+            ${{ env.DOCKER_IMAGE }}:${{ github.job }}
