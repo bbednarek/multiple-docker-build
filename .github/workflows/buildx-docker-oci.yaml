@@ -10,13 +10,13 @@ on:
     branches: [ main ]
   workflow_dispatch:
     inputs:
-        platforms:
-          description: What's the target platform?
-          type: choice
-          options:
-            - linux/amd64
-            - linux/arm64
-            - linux/amd64,linux/arm64
+      platforms:
+        description: What's the target platform?
+        type: choice
+        options:
+          - linux/amd64
+          - linux/arm64
+          - linux/amd64,linux/arm64
 
 jobs:
   buildx-docker-oci:
@@ -28,7 +28,7 @@ jobs:
       group: buildx-docker-oci-${{ github.ref }}
       cancel-in-progress: true
      steps:
-     
+
       - name: Take target platforms from workflow_dispatch
         if: github.event_name == 'workflow_dispatch'
         run: echo PLATFORMS=${{ inputs.platforms }} >> $GITHUB_ENV
