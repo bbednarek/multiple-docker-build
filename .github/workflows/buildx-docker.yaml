@@ -4,10 +4,10 @@ env:
   PLATFORMS: ${{ vars.PLATFORMS }}
 
 on:
-  # push:
-    # branches: [ main ]
-#   pull_request:
-#     branches: [ main ]
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
   workflow_dispatch:
 
 jobs:
@@ -32,14 +32,9 @@ jobs:
       - name: Set up Docker QEMU
         uses: docker/setup-qemu-action@v3
 
-      # - name: Set up Docker context for buildx
-      #   run: |
-      #     docker context create builders
-
       - name: Set up Docker buildx
         uses: docker/setup-buildx-action@v3
         with:
-          # endpoint: builders
           platforms: ${{ env.PLATFORMS }}
 
       - name: Docker local builder image
@@ -49,14 +44,6 @@ jobs:
           platforms: ${{ env.PLATFORMS }}
           push: false
           outputs: builder-image
-
-      # - name: Docker local builder image        
-      #   run: >
-      #     docker buildx build
-      #     --output builder-image
-      #     --platform=${{ env.PLATFORMS }}
-      #     .
-      #     -f Dockerfile.builder 
 
       - name: Docker Build & Push
         uses: docker/build-push-action@v5
