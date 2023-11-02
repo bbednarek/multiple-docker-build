@@ -17,18 +17,19 @@ on:
           - linux/amd64
           - linux/arm64
           - linux/amd64,linux/arm64
+        required: true
+        default: ${{ vars.PLATFORMS }}
 
 jobs:
   buildx-docker-oci:
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    timeout-minutes: 30
     env:
       DOCKER_IMAGE: bartbednarek/multiple-docker-build
     concurrency:
       group: buildx-docker-oci-${{ github.ref }}
       cancel-in-progress: true
-     steps:
-
+    steps:
       - name: Take target platforms from workflow_dispatch
         if: github.event_name == 'workflow_dispatch'
         run: echo PLATFORMS=${{ inputs.platforms }} >> $GITHUB_ENV
