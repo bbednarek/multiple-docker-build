@@ -17,7 +17,7 @@ jobs:
     env:
       DOCKER_IMAGE: bartbednarek/multiple-docker-build
     concurrency:
-      group: build-${{ github.job }}-${{ github.ref }}
+      group: buildx-docker-oci-${{ github.ref }}
       cancel-in-progress: true
     steps:
       - name: Login to Docker Hub
