@@ -1,5 +1,5 @@
 IMAGE_NAME=multiple-docker-build
-PLATFORMS=linux/amd64
+PLATFORMS=`([ "$(uname -m)" = "x86_64" ] && echo "linux/amd64") || echo "linux/arm64"`
 
 all: clean buildx-docker-oci
 

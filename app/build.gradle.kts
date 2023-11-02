@@ -8,7 +8,7 @@ plugins {
     kotlin("kapt") version "1.7.0"
 }
 
-group = "com.finmid"
+group = "com.bbednarek"
 version = "0.0.1-SNAPSHOT"
 java.sourceCompatibility = JavaVersion.VERSION_17
 
