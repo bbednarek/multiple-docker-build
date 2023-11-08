@@ -3,6 +3,8 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     id("org.jlleitschuh.gradle.ktlint") version "11.3.1"
+    id("maven-publish")
+    id("java-library")
 
     kotlin("jvm") version "1.7.0"
     kotlin("kapt") version "1.7.0"
@@ -44,7 +46,7 @@ tasks.withType<KotlinCompile> {
 tasks.withType<Test> {
     val tags: String? by project
     val tagList = tags?.split(",")?.map { it.trim() }
-    println("Running tags: $tags")
+//    println("Running tags: $tags")
     useJUnitPlatform {
         if (tagList != null) {
             includeTags.addAll(tagList)
@@ -57,5 +59,38 @@ tasks.withType<Test> {
         showExceptions = true
         showStackTraces = true
         showStandardStreams = true
+    }
+}
+
+tasks.register("printGithubPackagesReadToken") {
+    doFirst {
+        println(project.property("githubPackagesReadToken"))
+    }
+}
+
+val sourcesJar by tasks.registering(Jar::class) {
+    archiveClassifier.set("sources")
+    from(sourceSets.main.get().allSource)
+}
+
+publishing {
+    repositories {
+        val githubUser: String by project
+        val githubToken: String? by project
+
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/bbednarek/${rootProject.name}")
+            credentials {
+                username = githubUser
+                password = githubToken
+            }
+        }
+    }
+    publications {
+        register("mavenJava", MavenPublication::class) {
+            from(components["java"])
+            artifact(sourcesJar.get())
+        }
     }
 }
