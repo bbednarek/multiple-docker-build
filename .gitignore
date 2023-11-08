@@ -5,6 +5,7 @@
 bin
 build
 
+.idea
 
 # Ignore builder image directory
 builder-image
