@@ -75,7 +75,7 @@ val sourcesJar by tasks.registering(Jar::class) {
 
 publishing {
     repositories {
-        val githubUser: String by project
+        val githubUser: String? by project
         val githubToken: String? by project
 
         maven {
