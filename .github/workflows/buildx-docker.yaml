@@ -4,10 +4,11 @@ env:
   PLATFORMS: ${{ vars.PLATFORMS }}
 
 on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+# Disabled, because it times out after 60 min anyway...
+#  push:
+#    branches: [ main ]
+#  pull_request:
+#    branches: [ main ]
   workflow_dispatch:
     inputs:
       platforms:
