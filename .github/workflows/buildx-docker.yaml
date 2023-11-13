@@ -57,7 +57,7 @@ jobs:
         with:
           file: Dockerfile.builder
           build-args: |
-            gh_user=${{ github.actor }}
+            githubUser=${{ github.actor }}
             githubPackagesReadToken=${{ secrets.GH_PACKAGES_READ_TOKEN }}
           platforms: ${{ env.PLATFORMS }}
           push: false
