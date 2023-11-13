@@ -1,10 +1,10 @@
 FROM gradle:8.3.0-jdk17-jammy
 
-ARG gh_user
+ARG githubUser
 ARG githubPackagesReadToken
 
 WORKDIR app
 
 COPY . .
 
-RUN gradle -PgithubUser=$gh_user -PgithubPackagesReadToken=$githubPackagesReadToken clean build --no-daemon
+RUN gradle -PgithubUser=$githubUser -PgithubPackagesReadToken=$githubPackagesReadToken clean build --no-daemon

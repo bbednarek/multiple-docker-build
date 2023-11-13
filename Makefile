@@ -4,7 +4,7 @@ GH_USER=`git config user.name`
 GH_PACKAGES_READ_TOKEN=`./gradlew printGithubPackagesReadToken -q`
 VERSION=
 
-all: clean buildx-docker-oci test
+all: clean test
 
 clean:
 	./gradlew clean
@@ -16,15 +16,15 @@ build:
 	./gradlew build
 
 buildx-docker:
-	docker buildx build --build-arg gh_user=${GH_USER} --build-arg githubPackagesReadToken=${GH_PACKAGES_READ_TOKEN} --platform=${PLATFORMS} --output builder-image . -f Dockerfile.builder
-	docker buildx build --load --platform=${PLATFORMS} --build-context builder=builder-image . -t ${IMAGE_NAME} 
+	docker buildx build --build-arg githubUser=${GH_USER} --build-arg githubPackagesReadToken=${GH_PACKAGES_READ_TOKEN} --platform=${PLATFORMS} --output builder-image . -f Dockerfile.builder
+	docker buildx build --load --platform=${PLATFORMS} --build-context builder=builder-image . -t ${IMAGE_NAME}
 
 buildx-docker-oci:
-	docker buildx build --build-arg gh_user=${GH_USER} --build-arg githubPackagesReadToken=${GH_PACKAGES_READ_TOKEN} --platform=${PLATFORMS} --output type=oci,dest=builder-image,tar=false . -f Dockerfile.builder
-	docker buildx build --load --platform=${PLATFORMS} --build-context builder=oci-layout://./builder-image . -t ${IMAGE_NAME} 
+	docker buildx build --build-arg githubUser=${GH_USER} --build-arg githubPackagesReadToken=${GH_PACKAGES_READ_TOKEN} --platform=${PLATFORMS} --output type=oci,dest=builder-image,tar=false . -f Dockerfile.builder
+	docker buildx build --load --platform=${PLATFORMS} --build-context builder=oci-layout://./builder-image . -t ${IMAGE_NAME}
 
 build-docker:
-	docker build --build-arg gh_user=${GH_USER} --build-arg githubPackagesReadToken=${GH_PACKAGES_READ_TOKEN} --output builder-image . -f Dockerfile.builder
+	docker build --build-arg githubUser=${GH_USER} --build-arg githubPackagesReadToken=${GH_PACKAGES_READ_TOKEN} --output builder-image . -f Dockerfile.builder
 	docker build --load --build-context builder=builder-image . -t ${IMAGE_NAME} 
 
 test: buildx-docker

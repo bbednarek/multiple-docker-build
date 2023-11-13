@@ -1,4 +1,4 @@
-name: Docker buildx oci
+name: Docker buildx cli oci
 
 env:
   PLATFORMS: ${{ vars.PLATFORMS }}
@@ -21,13 +21,13 @@ on:
         default: linux/amd64
 
 jobs:
-  buildx-docker-oci:
+  buildx-docker-cli-oci:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
       DOCKER_IMAGE: bartbednarek/multiple-docker-build
     concurrency:
-      group: buildx-docker-oci-${{ github.ref }}
+      group: buildx-docker-cli-oci-${{ github.ref }}
       cancel-in-progress: true
     steps:
       - name: Take target platforms from workflow_dispatch
@@ -53,16 +53,25 @@ jobs:
           platforms: ${{ env.PLATFORMS }}
 
       - name: Docker local builder image
-        uses: docker/build-push-action@v5
-        with:
-          file: Dockerfile.builder
-          build-args: |
-            githubUser=${{ github.actor }}
-            githubPackagesReadToken=${{ secrets.GH_PACKAGES_READ_TOKEN }}
-          platforms: ${{ env.PLATFORMS }}
-          push: false
-          outputs: |
-            type=oci,dest=builder-image,tar=false
+        run: >
+          docker buildx build 
+          --build-arg githubUser=${{ github.actor }} 
+          --build-arg githubPackagesReadToken=${{ secrets.GH_PACKAGES_READ_TOKEN }} 
+          --platform=${{ env.PLATFORMS }}
+          --output type=oci,dest=builder-image,tar=false 
+          . 
+          -f Dockerfile.builder
+# run is cli version of
+#        uses: docker/build-push-action@v5
+#        with:
+#          file: Dockerfile.builder
+#          build-args: |
+#            githubUser=${{ github.actor }}
+#            githubPackagesReadToken=${{ secrets.GH_PACKAGES_READ_TOKEN }}
+#          platforms: ${{ env.PLATFORMS }}
+#          push: false
+#          outputs: |
+#            type=oci,dest=builder-image,tar=false
 
       - name: Docker Build & Push
         uses: docker/build-push-action@v5
@@ -73,4 +82,4 @@ jobs:
           push: ${{ github.ref == 'refs/heads/main' }}
           tags: |
             ${{ env.DOCKER_IMAGE }}:${{ github.run_number }}_${{ github.run_id }}
-            ${{ env.DOCKER_IMAGE }}:buildx-docker-oci
+            ${{ env.DOCKER_IMAGE }}:buildx-docker-cli-oci
