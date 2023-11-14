@@ -43,6 +43,6 @@ jobs:
         run: echo "TF_VAR_image=${{ env.DOCKER_IMAGE }}:$GITHUB_RUN_NUMBER" >> $GITHUB_ENV
 
       - name: Docker Build & Push
-        if: github.ref == 'refs/heads/master'
+        if: github.ref == 'refs/heads/main'
         run: |
           ./gradlew :app:jib --no-daemon --image=$TF_VAR_image
