@@ -69,7 +69,7 @@ jobs:
         with:
           context: app2
           build-contexts: |
-            builder=oci-layout://./app2/builder-image
+            builder=oci-layout://./builder-image
           platforms: ${{ env.PLATFORMS }}
           push: ${{ github.ref == 'refs/heads/main' }}
           tags: |
