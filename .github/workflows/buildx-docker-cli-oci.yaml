@@ -63,13 +63,14 @@ jobs:
           -f Dockerfile.builder
 
 # run is cli version of
+#      - name: Docker local builder image
 #        uses: docker/build-push-action@v5
 #        with:
+#          context: app2
 #          file: app2/Dockerfile.builder
 #          build-args: |
 #            githubUser=${{ github.actor }}
 #            githubPackagesReadToken=${{ secrets.GH_PACKAGES_READ_TOKEN }}
-#          platforms: ${{ env.PLATFORMS }}
 #          push: false
 #          outputs: |
 #            type=oci,dest=builder-image,tar=false
