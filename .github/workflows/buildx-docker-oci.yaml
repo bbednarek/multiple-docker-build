@@ -4,10 +4,10 @@ env:
   PLATFORMS: ${{ vars.PLATFORMS }}
 
 on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+#  push:
+#    branches: [ main ]
+#  pull_request:
+#    branches: [ main ]
   workflow_dispatch:
     inputs:
       platforms:
@@ -54,21 +54,22 @@ jobs:
 
       - name: Docker local builder image
         uses: docker/build-push-action@v5
+        context: app2
         with:
           file: Dockerfile.builder
           build-args: |
             githubUser=${{ github.actor }}
             githubPackagesReadToken=${{ secrets.GH_PACKAGES_READ_TOKEN }}
-          platforms: ${{ env.PLATFORMS }}
           push: false
           outputs: |
             type=oci,dest=builder-image,tar=false
 
       - name: Docker Build & Push
         uses: docker/build-push-action@v5
+        context: app2
         with:          
           build-contexts: |
-            builder=oci-layout://./builder-image
+            builder=oci-layout://./app2/builder-image
           platforms: ${{ env.PLATFORMS }}
           push: ${{ github.ref == 'refs/heads/main' }}
           tags: |

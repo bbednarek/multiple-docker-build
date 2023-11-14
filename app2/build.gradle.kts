@@ -5,13 +5,12 @@ plugins {
     id("org.jlleitschuh.gradle.ktlint") version "11.3.1"
     id("maven-publish")
     id("java-library")
-    id("com.google.cloud.tools.jib") version "3.3.1"
 
     kotlin("jvm") version "1.7.0"
     kotlin("kapt") version "1.7.0"
 }
 
-group = "com.bbednarek.app"
+group = "com.bbednarek.app2"
 version = "0.0.1-SNAPSHOT"
 java.sourceCompatibility = JavaVersion.VERSION_17
 
@@ -63,27 +62,6 @@ tasks.withType<Test> {
     }
 }
 
-jib {
-    from {
-        image = "eclipse-temurin:17-jre-jammy"
-        platforms {
-            platform {
-                architecture = "amd64"
-                os = "linux"
-            }
-        }
-    }
-
-    to {
-        image = "bartbednarek/multiple-docker-build-app"
-//        tags = setOf("latest")
-    }
-
-    container {
-        entrypoint = listOf("INHERIT")
-    }
-}
-
 tasks.register("printGithubPackagesReadToken") {
     doFirst {
         println(project.property("githubPackagesReadToken"))
@@ -99,32 +77,5 @@ tasks.register("printDockerUsername") {
 tasks.register("printDockerToken") {
     doFirst {
         println(project.property("dockerToken"))
-    }
-}
-
-val sourcesJar by tasks.registering(Jar::class) {
-    archiveClassifier.set("sources")
-    from(sourceSets.main.get().allSource)
-}
-
-publishing {
-    repositories {
-        val githubUser: String? by project
-        val githubToken: String? by project
-
-        maven {
-            name = "GitHubPackages"
-            url = uri("https://maven.pkg.github.com/bbednarek/${rootProject.name}")
-            credentials {
-                username = githubUser
-                password = githubToken
-            }
-        }
-    }
-    publications {
-        register("mavenJava", MavenPublication::class) {
-            from(components["java"])
-            artifact(sourcesJar.get())
-        }
     }
 }
