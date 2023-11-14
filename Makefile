@@ -39,10 +39,10 @@ build-docker:
 	cd app2; docker build --build-arg githubUser=${GH_USER} --build-arg githubPackagesReadToken=${GH_PACKAGES_READ_TOKEN} --output builder-image . -f Dockerfile.builder
 	cd app2; docker build --load --build-context builder=builder-image . -t ${IMAGE_NAME}
 
-test: build-app
+test:
 	./gradlew test
 	cd app2; ./gradlew test
 
-release: build-app
+release:
 	if [ -z "$VERSION" ]; then echo "ERROR: Usage is: make VERSION=<version> release"; exit 1; fi
 	./gradlew -Pversion=$VERSION clean build publish
