@@ -4,10 +4,10 @@ env:
   PLATFORMS: ${{ vars.PLATFORMS }}
 
 on:
-#  push:
-#    branches: [ main ]
-#  pull_request:
-#    branches: [ main ]
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
   workflow_dispatch:
     inputs:
       platforms:
@@ -56,7 +56,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: app2
-          file: Dockerfile.builder
+          file: app2/Dockerfile.builder
           build-args: |
             githubUser=${{ github.actor }}
             githubPackagesReadToken=${{ secrets.GH_PACKAGES_READ_TOKEN }}
@@ -65,9 +65,10 @@ jobs:
 
       - name: Docker Build & Push
         uses: docker/build-push-action@v5
-        with:          
+        with:
+          context: app2
           build-contexts: |
-            builder=app2/builder-image
+            builder=builder-image
           platforms: ${{ env.PLATFORMS }}
           push: ${{ github.ref == 'refs/heads/main' }}
           tags: |
