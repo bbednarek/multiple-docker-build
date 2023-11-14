@@ -54,8 +54,8 @@ jobs:
 
       - name: Docker local builder image
         uses: docker/build-push-action@v5
-        context: app2
         with:
+          context: app2
           file: Dockerfile.builder
           build-args: |
             githubUser=${{ github.actor }}
@@ -66,8 +66,8 @@ jobs:
 
       - name: Docker Build & Push
         uses: docker/build-push-action@v5
-        context: app2
-        with:          
+        with:
+          context: app2
           build-contexts: |
             builder=oci-layout://./app2/builder-image
           platforms: ${{ env.PLATFORMS }}
