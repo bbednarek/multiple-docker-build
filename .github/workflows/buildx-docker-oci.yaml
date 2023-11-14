@@ -55,18 +55,19 @@ jobs:
       - name: Docker local builder image
         uses: docker/build-push-action@v5
         with:
-          file: Dockerfile.builder
+          context: app2
+          file: app2/Dockerfile.builder
           build-args: |
             githubUser=${{ github.actor }}
             githubPackagesReadToken=${{ secrets.GH_PACKAGES_READ_TOKEN }}
-          platforms: ${{ env.PLATFORMS }}
           push: false
           outputs: |
             type=oci,dest=builder-image,tar=false
 
       - name: Docker Build & Push
         uses: docker/build-push-action@v5
-        with:          
+        with:
+          context: app2
           build-contexts: |
             builder=oci-layout://./builder-image
           platforms: ${{ env.PLATFORMS }}

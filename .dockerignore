@@ -1,4 +1,0 @@
-.dockerignore
-builder-image
-Dockerfile
-Dockerfile.builder

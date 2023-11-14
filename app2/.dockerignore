@@ -1,0 +1,4 @@
+.dockerignore
+builder-image
+app2/Dockerfile
+app2/Dockerfile.builder

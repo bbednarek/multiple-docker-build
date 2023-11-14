@@ -1,6 +1,6 @@
 package com.github.bbednarek
 
-class App {
+class App2 {
     val greeting: String
         get() {
             return "Hello World!"
@@ -8,5 +8,5 @@ class App {
 }
 
 fun main() {
-    println(App().greeting)
+    println(App2().greeting)
 }

@@ -4,11 +4,10 @@ env:
   PLATFORMS: ${{ vars.PLATFORMS }}
 
 on:
-# Disabled, because it times out after 60 min anyway...
-#  push:
-#    branches: [ main ]
-#  pull_request:
-#    branches: [ main ]
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
   workflow_dispatch:
     inputs:
       platforms:
@@ -56,17 +55,18 @@ jobs:
       - name: Docker local builder image
         uses: docker/build-push-action@v5
         with:
-          file: Dockerfile.builder
+          context: app2
+          file: app2/Dockerfile.builder
           build-args: |
             githubUser=${{ github.actor }}
             githubPackagesReadToken=${{ secrets.GH_PACKAGES_READ_TOKEN }}
-          platforms: ${{ env.PLATFORMS }}
           push: false
           outputs: builder-image
 
       - name: Docker Build & Push
         uses: docker/build-push-action@v5
-        with:          
+        with:
+          context: app2
           build-contexts: |
             builder=builder-image
           platforms: ${{ env.PLATFORMS }}
