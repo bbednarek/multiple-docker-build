@@ -1,0 +1,35 @@
+name: Example slack notify
+
+on:
+  workflow_dispatch:
+    status:
+      description: Which status?
+      type: choice
+      options:
+        - success
+        - failure
+      required: true
+
+jobs:
+  check-key-job:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    outputs:
+      example-script-output-1: ${{ steps.example-script.outputs.status }}
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - id: example-script
+        name: Run Example Script
+        run: ./.github/scripts/example.sh ${{ github.event.inputs.status }}
+        shell: bash
+
+      - name: Notify Slack Channel
+        if: failure() || ${{ steps.example-script.outputs.status }}
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_CHANNEL: bart-test
+          SLACK_COLOR: '#db540b'
+          SLACK_MESSAGE: "The script failed"
+          SLACK_TOKEN: ${{ secrets.SLACK_NOTIFICATIONS_BOT_TOKEN }}
