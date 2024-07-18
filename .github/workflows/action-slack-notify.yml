@@ -2,13 +2,14 @@ name: Example slack notify
 
 on:
   workflow_dispatch:
-    status:
-      description: Which status?
-      type: choice
-      options:
-        - success
-        - failure
-      required: true
+    inputs:
+      status:
+        description: Which status?
+        type: choice
+        options:
+          - success
+          - failure
+        required: true
 
 jobs:
   check-key-job:
