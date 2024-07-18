@@ -23,5 +23,6 @@ case $1 in
     *)
       echo "Invalid option: $1"
       echo "Usage: $(basename $0) failure|success"
+      exit 1
       ;;
 esac
