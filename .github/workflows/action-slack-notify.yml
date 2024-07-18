@@ -28,7 +28,6 @@ jobs:
         shell: bash
 
       - name: Notify Slack Channel
-        # if: failure() ||
         if: ${{ failure() || steps.example-script.outputs.status != 'success' }}
         uses: rtCamp/action-slack-notify@v2
         env:
