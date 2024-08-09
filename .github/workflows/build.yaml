@@ -5,10 +5,10 @@ env:
   ORG_GRADLE_PROJECT_githubPackagesReadToken: ${{ secrets.GH_PACKAGES_READ_TOKEN }}
 
 on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+#  push:
+#    branches: [ main ]
+#  pull_request:
+#    branches: [ main ]
   workflow_dispatch:
 
 jobs:
