@@ -22,3 +22,19 @@ jobs:
         run: | 
           echo "Main workflow"
           sleep 10
+
+  build2:
+    needs: [build]
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    concurrency:
+      group: build-${{ github.workflow }}-${{ github.ref }}
+      cancel-in-progress: true
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Build
+        run: |
+          echo "Main workflow 2"
+          sleep 10
